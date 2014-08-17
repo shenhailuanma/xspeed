@@ -6,14 +6,14 @@ else
 
 SHELL = /bin/bash
 
-other_targets = x264 faac ffmpeg
+other_targets = ffmpeg
 
 .PHONY: all
 
 all: $(other_targets)
 
 
-ffmpeg: x264 faac
+ffmpeg: 
 
 .SECONDEXPANSION:
 
