@@ -181,7 +181,7 @@ int main(int argc, char ** argv)
     struct xspeed_params params;
 
     AVFormatContext *ctx = NULL;
-
+    AVFormatContext *output_context = NULL;
 
 
 
@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
     printf("input:%s\n", params.input);
     printf("output:%s\n", params.output);
     printf("speed:%d\n", params.speed);
-
+    printf("format:%s\n", params.format);
 
     av_register_all();
 
@@ -221,14 +221,14 @@ int main(int argc, char ** argv)
     int audio_time_base = 0;
     int video_time_base = 0;
     int i;
-
+    AVCodecContext *video_decoder_ctx = NULL;
 
     for(i = 0; i < ctx->nb_streams; i++){
         AVStream* stream = ctx->streams[i];
         if(stream->codec->codec_type == AVMEDIA_TYPE_VIDEO){
             printf("find a video stream[%d]: %dkbps\n", i, stream->codec->bit_rate / 1000);
             videoStreamIndex = i;
-  
+            video_decoder_ctx = stream->codec;
             video_time_base = stream->time_base.den / stream->time_base.num;
             printf("video_time_base=%d\n", video_time_base);
         }
@@ -239,6 +239,72 @@ int main(int argc, char ** argv)
             audio_time_base = stream->time_base.den / stream->time_base.num;
             printf("audio_time_base=%d\n", audio_time_base);
         }
+    }
+
+
+    // open the output 
+    AVOutputFormat *output_format = NULL;
+    if(strncmp(params.format, "ts", sizeof("ts")) == 0){
+        output_format = av_guess_format("mpegts", NULL, NULL);
+    } else if(strncmp(params.format, "flv", sizeof("flv")) == 0){
+        output_format = av_guess_format("flv", NULL, NULL);
+    } else {
+        output_format = av_guess_format("mp4", NULL, NULL);
+    }
+    if (!output_format) {
+        ERR("Could not find %s format", params.format);
+        return -1;
+    }
+
+    output_context = avformat_alloc_context();
+    if (!outctx) {
+        ERR("Could not allocated output context");
+        return -1;
+    }
+    output_context->oformat = output_format;
+
+
+    AVStream *video_stream;
+    AVCodecContext *video_enc_ctx;
+    int video_extra_size;
+
+    AVMetadataTag *t = NULL;
+    while ((t = av_metadata_get(ctx->metadata, "", t, AV_METADATA_IGNORE_SUFFIX)))
+        av_metadata_set2(&output_context->metadata, t->key, t->value, AV_METADATA_DONT_OVERWRITE);
+
+    if(video_decoder_ctx != NULL){
+        video_stream = av_new_stream(output_context, output_context->nb_streams);
+        video_stream->time_base = ctx->streams[videoStreamIndex]->time_base;
+        avcodec_get_context_defaults2(video_stream->codec, AVMEDIA_TYPE_VIDEO);
+        video_enc_ctx = video_stream->codec;
+
+        video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
+        video_enc_ctx->codec_type = video_decoder_ctx->codec_type;
+        if(!video_enc_ctx->codec_tag){
+                if( !output_context->oformat->codec_tag
+                   || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
+                   || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
+                    video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
+        }
+
+        video_enc_ctx->bit_rate = video_decoder_ctx->bit_rate;
+        video_enc_ctx->bit_rate_tolerance = video_decoder_ctx->bit_rate_tolerance;
+
+        video_enc_ctx->rc_buffer_size = video_decoder_ctx->rc_buffer_size;
+        video_enc_ctx->pix_fmt = video_decoder_ctx->pix_fmt;
+        video_enc_ctx->time_base = input_context->streams[video_index]->time_base;  
+
+        video_enc_ctx->width = video_decoder_ctx->width;
+        video_enc_ctx->height = video_decoder_ctx->height;
+        video_enc_ctx->has_b_frames = video_decoder_ctx->has_b_frames;
+
+        if(output_context->oformat->flags & AVFMT_GLOBALHEADER)
+            video_enc_ctx->flags |= CODEC_FLAG_GLOBAL_HEADER;
+
+        extra_size = video_decoder_ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE;
+        video_enc_ctx->extradata = av_mallocz(extra_size);
+        memcpy(video_enc_ctx->extradata, video_decoder_ctx->extradata, video_decoder_ctx->extradata_size);
+        video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
     }
 
 
