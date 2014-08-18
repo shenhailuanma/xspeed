@@ -197,9 +197,9 @@ int main(int argc, char ** argv)
     av_register_all();
 
     // open the media file
-    ret = avformat_open_input(&ctx, params->input, NULL, NULL);
+    ret = avformat_open_input(&ctx, params.input, NULL, NULL);
     if (ret < 0) {
-        ERR("error open stream: '%s', error code: %d \n", params->input, ret);
+        ERR("error open stream: '%s', error code: %d \n", params.input, ret);
         return -1;
     }
 
@@ -238,6 +238,23 @@ int main(int argc, char ** argv)
         }
     }
 
+
+    AVPacket packet;
+    int frameIndex = 0;
+
+    int64_t pre_video_dts = 0;
+    int64_t pre_audio_dts = 0;
+
+    int fps = ctx->streams[videoStreamIndex]->r_frame_rate.num/ctx->streams[videoStreamIndex]->r_frame_rate.den;
+    printf("fps = %d\n", fps);
+
+
+    int video_should_dt = video_time_base/fps;
+    printf("video_should_dt = %d\n", video_should_dt);
+
+    int video_dt = 0;
+    int frame_error = 0;
+    
     // do 
     while(1){
  
