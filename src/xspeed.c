@@ -6,7 +6,7 @@
 #include <inttypes.h>
 #include <getopt.h>
 #include <sys/time.h>
-
+#include <stdlib.h>
 
 #include "libavformat/avformat.h"
 
@@ -61,7 +61,7 @@ struct xspeed_params{
     char input[512]; // input url
     char output[512];
     char format[32];
-    int  speed;
+    double  speed;
 
 };
 
@@ -143,11 +143,8 @@ static int parse_and_update_params(struct xspeed_params * params, int argc, char
 
             case 's':
                 printf("-s(--speed):%s\n",optarg);
-                if(strlen(optarg) >= sizeof(params->format)){
-                    printf("format too long!\n");
-                    return ARG_PARSE_ERROR;
-                }
-                strcpy(params->format, optarg);
+                params->speed = atof(optarg);
+               
                 break;
             default:
                 print_help();
@@ -194,10 +191,10 @@ int main(int argc, char ** argv)
 
     printf("input:%s\n", params.input);
     printf("output:%s\n", params.output);
-    printf("speed:%d\n", params.speed);
+    printf("speed:%f\n", params.speed);
     printf("format:%s\n", params.format);
 
-    params.speed = 2;
+    //params.speed = 2;
 
     av_register_all();
 
@@ -298,9 +295,12 @@ int main(int argc, char ** argv)
         video_enc_ctx->time_base = ctx->streams[videoStreamIndex]->time_base;  
 
         video_enc_ctx->width = video_decoder_ctx->width;
+        video_enc_ctx->width = 640;
         video_enc_ctx->height = video_decoder_ctx->height;
+        video_enc_ctx->height = 480;
         video_enc_ctx->has_b_frames = video_decoder_ctx->has_b_frames;
-
+	printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
+        
         if(output_context->oformat->flags & AVFMT_GLOBALHEADER)
             video_enc_ctx->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
@@ -325,7 +325,7 @@ int main(int argc, char ** argv)
     }
 
     if (avformat_write_header(output_context,NULL)) {
-        ERR("Could not write mpegts header to first output file");
+        ERR("Could not write header to the output file.\n");
         return -1;
     }
 
