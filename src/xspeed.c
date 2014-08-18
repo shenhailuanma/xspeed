@@ -316,7 +316,7 @@ int main(int argc, char ** argv)
     tvie_info("-----output file info-----");
     dump_format(output_context, 0, params.output, 1);
 
-    if (url_fopen(&output_context->pb, params.output, URL_WRONLY) < 0) {
+    if (url_fopen(&output_context->pb, params.output, AVIO_FLAG_WRITE) < 0) {
         ERR("Could not open '%s'", params.output);
         return -1;
     }
