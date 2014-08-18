@@ -282,13 +282,14 @@ int main(int argc, char ** argv)
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
         video_enc_ctx->codec_type = video_decoder_ctx->codec_type;
-        if(!video_enc_ctx->codec_tag){
+        /*
+        (!video_enc_ctx->codec_tag){
                 if( !output_context->oformat->codec_tag
                    || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
                    || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
                     video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
         }
-
+        */
         video_enc_ctx->bit_rate = video_decoder_ctx->bit_rate;
         video_enc_ctx->bit_rate_tolerance = video_decoder_ctx->bit_rate_tolerance;
 
@@ -309,19 +310,21 @@ int main(int argc, char ** argv)
         video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
     }
 
-    if (av_set_parameters(output_context, NULL) < 0) {
-        ERR("Invalid output format parameters\n");
-        return -1;
-    }
-    tvie_info("-----output file info-----");
+    //if (av_set_parameters(output_context, NULL) < 0) {
+    //    ERR("Invalid output format parameters\n");
+    //    return -1;
+    //}
+
+    
+    printf("----- output file info -----");
     dump_format(output_context, 0, params.output, 1);
 
-    if (url_fopen(&output_context->pb, params.output, AVIO_FLAG_WRITE) < 0) {
+    if (avio_open(&output_context->pb, params.output, AVIO_FLAG_WRITE) < 0) {
         ERR("Could not open '%s'", params.output);
         return -1;
     }
 
-    if (av_write_header(output_context)) {
+    if (avformat_write_header(output_context,NULL)) {
         ERR("Could not write mpegts header to first output file");
         return -1;
     }
