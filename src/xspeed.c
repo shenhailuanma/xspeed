@@ -317,7 +317,7 @@ int main(int argc, char ** argv)
 
     
     printf("----- output file info -----");
-    dump_format(output_context, 0, params.output, 1);
+    av_dump_format(output_context, 0, params.output, 1);
 
     if (avio_open(&output_context->pb, params.output, AVIO_FLAG_WRITE) < 0) {
         ERR("Could not open '%s'", params.output);
