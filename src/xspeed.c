@@ -263,7 +263,7 @@ int main(int argc, char ** argv)
         ret = av_read_frame(ctx, &packet);
         if(ret == AVERROR(EAGAIN)){
             // EAGAIN means try again
-            msSleep(10);
+
             continue;
         }
         if(ret < 0){
