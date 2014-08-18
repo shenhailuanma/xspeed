@@ -257,7 +257,7 @@ int main(int argc, char ** argv)
     }
 
     output_context = avformat_alloc_context();
-    if (!outctx) {
+    if (!output_context) {
         ERR("Could not allocated output context");
         return -1;
     }
@@ -268,9 +268,9 @@ int main(int argc, char ** argv)
     AVCodecContext *video_enc_ctx;
     int video_extra_size;
 
-    AVMetadataTag *t = NULL;
-    while ((t = av_metadata_get(ctx->metadata, "", t, AV_METADATA_IGNORE_SUFFIX)))
-        av_metadata_set2(&output_context->metadata, t->key, t->value, AV_METADATA_DONT_OVERWRITE);
+    //AVMetadataTag *t = NULL;
+    //while ((t = av_metadata_get(ctx->metadata, "", t, AV_METADATA_IGNORE_SUFFIX)))
+    //    av_metadata_set2(&output_context->metadata, t->key, t->value, AV_METADATA_DONT_OVERWRITE);
 
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
@@ -292,7 +292,7 @@ int main(int argc, char ** argv)
 
         video_enc_ctx->rc_buffer_size = video_decoder_ctx->rc_buffer_size;
         video_enc_ctx->pix_fmt = video_decoder_ctx->pix_fmt;
-        video_enc_ctx->time_base = input_context->streams[video_index]->time_base;  
+        video_enc_ctx->time_base = ctx->streams[videoStreamIndex]->time_base;  
 
         video_enc_ctx->width = video_decoder_ctx->width;
         video_enc_ctx->height = video_decoder_ctx->height;
@@ -301,8 +301,8 @@ int main(int argc, char ** argv)
         if(output_context->oformat->flags & AVFMT_GLOBALHEADER)
             video_enc_ctx->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
-        extra_size = video_decoder_ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE;
-        video_enc_ctx->extradata = av_mallocz(extra_size);
+        video_extra_size = video_decoder_ctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE;
+        video_enc_ctx->extradata = av_mallocz(video_extra_size);
         memcpy(video_enc_ctx->extradata, video_decoder_ctx->extradata, video_decoder_ctx->extradata_size);
         video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
     }
