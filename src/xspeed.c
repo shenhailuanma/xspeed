@@ -197,6 +197,8 @@ int main(int argc, char ** argv)
     printf("speed:%d\n", params.speed);
     printf("format:%s\n", params.format);
 
+    params.speed = 2;
+
     av_register_all();
 
     // open the media file
@@ -307,6 +309,22 @@ int main(int argc, char ** argv)
         video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
     }
 
+    if (av_set_parameters(output_context, NULL) < 0) {
+        ERR("Invalid output format parameters\n");
+        return -1;
+    }
+    tvie_info("-----output file info-----");
+    dump_format(output_context, 0, params.output, 1);
+
+    if (url_fopen(&output_context->pb, params.output, URL_WRONLY) < 0) {
+        ERR("Could not open '%s'", params.output);
+        return -1;
+    }
+
+    if (av_write_header(output_context)) {
+        ERR("Could not write mpegts header to first output file");
+        return -1;
+    }
 
     AVPacket packet;
     int frameIndex = 0;
@@ -341,22 +359,21 @@ int main(int argc, char ** argv)
             frameIndex++;
             frame_error = 0;
 
-            if(pre_video_dts != 0){
-                pre_video_dts = packet.dts;
-            }else{
-                video_dt = packet.dts - pre_video_dts;
-                if(video_dt - 2*video_should_dt > 0 || pre_video_dts >  packet.dts){
-                    frame_error = 1;
-                }
+            packet.pts = packet.pts * params.speed;
+            packet.dts = packet.dts * params.speed;
+            //printf("#%d : [video], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d, error=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size, frame_error);
+            
+            ret = av_interleaved_write_frame(output_context, &packet);
+            if (ret < 0) {
+                ERR("Could not write frame of stream: %d\n", ret);
+                return -1;
             }
-            pre_video_dts = packet.dts;
-            printf("#%d : [video], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d, error=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size, frame_error);
         }
         if(packet.stream_index == audioStreamIndex){
             frameIndex++;
-
-            printf("#%d : [audio], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size);
+            //printf("#%d : [audio], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size);
         }
+
         av_free_packet(&packet);
     }
 
