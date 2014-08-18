@@ -51,7 +51,7 @@ OS = pc
 ifeq ($(OS),ios)
     CC = /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc
 else ifeq ($(OS),android)
-    CC = /
+    CC = 
 endif
 
 
@@ -64,7 +64,7 @@ export LINKFLAGS
 export OS
 export CC
 
-targets = 3rdparty module 
+targets = 3rdparty src 
 
 
 .PHONY: $(targets) all clean 
