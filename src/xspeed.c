@@ -5,6 +5,8 @@
 #include <time.h>
 #include <inttypes.h>
 #include <getopt.h>
+#include <sys/time.h>
+
 
 #include "libavformat/avformat.h"
 
@@ -254,7 +256,7 @@ int main(int argc, char ** argv)
 
     int video_dt = 0;
     int frame_error = 0;
-    
+
     // do 
     while(1){
  
