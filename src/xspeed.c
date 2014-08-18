@@ -88,6 +88,7 @@ static struct option    long_option[] =
     {"input",   required_argument,  0, 'i'},
     {"speed",   required_argument,  0, 's'},
     {"output",   required_argument,  0, 'o'},
+    {"format",   required_argument,  0, 'f'},
     {0, 0, 0, 0},
 };
 
@@ -99,7 +100,7 @@ static int parse_and_update_params(struct xspeed_params * params, int argc, char
     int argcnt = 0;
 
     while(1){
-        ch = getopt_long(argc, argv, "hi:o:x:", long_option, &option_index);
+        ch = getopt_long(argc, argv, "hi:o:s:f:", long_option, &option_index);
         if(ch == EOF){
             break;
         }
