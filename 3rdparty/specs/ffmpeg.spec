@@ -10,6 +10,7 @@ echo "${INSTALLDIR}"
   --disable-postproc \
   --disable-avfilter \
   --disable-filters \
+  --disable-hwaccels \
   --disable-debug \
   --enable-nonfree \
   --enable-static \
