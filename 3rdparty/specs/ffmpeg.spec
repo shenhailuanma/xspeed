@@ -32,4 +32,4 @@ echo "${INSTALLDIR}"
 #sed -i -e 's/-fomit-frame-pointer//' -e 's/-O3//g' config.mak
 
 # build semi-statically linked ffmpeg, ffplay, ffserver
-sed -i -e 's#^LDFLAGS=.*#LDFLAGS=$(SRC_PATH)/libavformat/libavformat.a $(SRC_PATH)/libavcodec/libavcodec.a $(SRC_PATH)/libavutil/libavutil.a $(SRC_PATH)/libswscale/libswscale.a#' -e 's#^EXTRALIBS=.*#EXTRALIBS=${INSTALLDIR}/lib/libx264.a ${INSTALLDIR}/lib/libfaac.a -lm -lasound -lssl -lcrypto -ldl -lbz2 -lz -lpthread #' config.mak
+#sed -i -e 's#^LDFLAGS=.*#LDFLAGS=$(SRC_PATH)/libavformat/libavformat.a $(SRC_PATH)/libavcodec/libavcodec.a $(SRC_PATH)/libavutil/libavutil.a $(SRC_PATH)/libswscale/libswscale.a#' -e 's#^EXTRALIBS=.*#EXTRALIBS= -lm -lasound -lssl -lcrypto -ldl -lbz2 -lz -lpthread #' config.mak
