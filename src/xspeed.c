@@ -6,6 +6,8 @@
 #include <inttypes.h>
 #include <getopt.h>
 
+#include "libavformat/avformat.h"
+
 
 static int xspeed_debug = 1;
 #ifdef MODULE_NAME
@@ -55,7 +57,7 @@ static int xspeed_debug = 1;
 
 struct xspeed_params{
     char input[512]; // input url
-    char ouput[512];
+    char output[512];
     char format[32];
     int  speed;
 
@@ -173,7 +175,7 @@ int main(int argc, char ** argv)
     int ret;
     int val;
     
-    struct media_ts_params params;
+    struct xspeed_params params;
 
     AVFormatContext *ctx = NULL;
 
@@ -197,7 +199,7 @@ int main(int argc, char ** argv)
     // open the media file
     ret = avformat_open_input(&ctx, params->input, NULL, NULL);
     if (ret < 0) {
-        ERR("error open stream: '%s', error code: %d \n", params->input, err);
+        ERR("error open stream: '%s', error code: %d \n", params->input, ret);
         return -1;
     }
 
@@ -215,20 +217,22 @@ int main(int argc, char ** argv)
     double time_base = 0;
     int audio_time_base = 0;
     int video_time_base = 0;
+    int i;
 
-    for(i = 0; i < context->nb_streams; i++){
-        AVStream* stream = context->streams[i];
+
+    for(i = 0; i < ctx->nb_streams; i++){
+        AVStream* stream = ctx->streams[i];
         if(stream->codec->codec_type == AVMEDIA_TYPE_VIDEO){
             printf("find a video stream[%d]: %dkbps\n", i, stream->codec->bit_rate / 1000);
             videoStreamIndex = i;
-            codec = stream->codec;
+  
             video_time_base = stream->time_base.den / stream->time_base.num;
             printf("video_time_base=%d\n", video_time_base);
         }
         if(stream->codec->codec_type == AVMEDIA_TYPE_AUDIO){
             printf("find a audio stream[%d]: %dkbps\n", i, stream->codec->bit_rate / 1000);
             audioStreamIndex = i;
-            codec = stream->codec;
+           
             audio_time_base = stream->time_base.den / stream->time_base.num;
             printf("audio_time_base=%d\n", audio_time_base);
         }
