@@ -19,14 +19,37 @@ echo "${INSTALLDIR}"
   --disable-ffprobe \
   --disable-ffserver \
   --disable-encoders \
+  --disable-decoders \
+  --enable-decoder=aac \
+  --enable-decoder=aac_latm \
+  --enable-decoder=ac3 \
+  --enable-decoder=flv \
+  --enable-decoder=h264 \
+  --enable-decoder=mpeg4 \
+  --enable-decoder=mpeg2video \
+  --enable-decoder=mp3 \
+  --enable-decoder=mp2 \
   --disable-muxers \
+  --disable-demuxers \
   --enable-muxer=flv \
   --enable-muxer=mp4 \
   --enable-muxer=mpegts \
+  --enable-demuxer=aac \
+  --enable-demuxer=ac3 \
+  --enable-demuxer=h264 \
+  --enable-demuxer=flv \
+  --enable-demuxer=latm \
+  --enable-demuxer=mpegvideo \
+  --enable-demuxer=mov \
+  --enable-demuxer=pcm_s16le \
+  --enable-demuxer=pcm_s16be \
   --disable-protocols \
-  --enable-protocol=file \
-  --enable-protocol=rtmp \
-  --enable-protocol=rtmpt
+  --disable-parsers \
+  --enable-small \
+  --enable-protocol=file 
+
+#  --enable-protocol=rtmp \
+#  --enable-protocol=rtmpt
 
   #--disable-parsers \
   #--disable-decoders \

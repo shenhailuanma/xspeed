@@ -29,7 +29,7 @@ all: xspeed
 
 
 xspeed: $(OBJECTS) $(INSTALLDIR)/lib/libavformat.a $(INSTALLDIR)/lib/libavcodec.a \
-$(INSTALLDIR)/lib/libavutil.a $(INSTALLDIR)/lib/libswscale.a $(INSTALLDIR)/lib/libswresample.a 
+$(INSTALLDIR)/lib/libavutil.a  
 	$(CC) $^ -o $@ -lasound -lm -lz -lbz2 -lssl -lcrypto $(CPPFLAGS) $(LDFLAGS) $(LINKFLAGS)
 
 clean:
