@@ -20,7 +20,7 @@ echo "${INSTALLDIR}"
   --disable-ffserver \
   --disable-decoders \
   --disable-encoders \
-  --disable-parsers \
+  --enable-small \
   --disable-muxers \
   --enable-muxer=flv \
   --enable-muxer=mp4 \
@@ -30,6 +30,7 @@ echo "${INSTALLDIR}"
   --enable-protocol=rtmp \
   --enable-protocol=rtmpt
 
+  #--disable-parsers \
 #sed -i -e 's/-fomit-frame-pointer//' -e 's/-O3//g' config.mak
 
 # build semi-statically linked ffmpeg, ffplay, ffserver
