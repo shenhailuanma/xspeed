@@ -212,7 +212,9 @@ int main(int argc, char ** argv)
     }
 
     av_dump_format(ctx, 0, ctx->filename, 0);
-
+    printf("input format:%s\n", ctx->iformat->name);
+    strcpy(params.format, ctx->iformat->name);
+    printf("output format:%s\n", params.format);
 
     int videoStreamIndex=-1;
     int audioStreamIndex=-1;
@@ -295,9 +297,9 @@ int main(int argc, char ** argv)
         video_enc_ctx->time_base = ctx->streams[videoStreamIndex]->time_base;  
 
         video_enc_ctx->width = video_decoder_ctx->width;
-        video_enc_ctx->width = 640;
+       // video_enc_ctx->width = 640;
         video_enc_ctx->height = video_decoder_ctx->height;
-        video_enc_ctx->height = 480;
+       // video_enc_ctx->height = 480;
         video_enc_ctx->has_b_frames = video_decoder_ctx->has_b_frames;
 	printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
         
@@ -316,7 +318,6 @@ int main(int argc, char ** argv)
     //}
 
     
-    printf("----- output file info -----");
     av_dump_format(output_context, 0, params.output, 1);
 
     if (avio_open(&output_context->pb, params.output, AVIO_FLAG_WRITE) < 0) {
@@ -331,18 +332,6 @@ int main(int argc, char ** argv)
 
     AVPacket packet;
     int frameIndex = 0;
-
-    int64_t pre_video_dts = 0;
-    int64_t pre_audio_dts = 0;
-
-    int fps = ctx->streams[videoStreamIndex]->r_frame_rate.num/ctx->streams[videoStreamIndex]->r_frame_rate.den;
-    printf("fps = %d\n", fps);
-
-
-    int video_should_dt = video_time_base/fps;
-    printf("video_should_dt = %d\n", video_should_dt);
-
-    int video_dt = 0;
     int frame_error = 0;
 
     // do 
@@ -364,7 +353,6 @@ int main(int argc, char ** argv)
 
             packet.pts = packet.pts * params.speed;
             packet.dts = packet.dts * params.speed;
-            //printf("#%d : [video], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d, error=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size, frame_error);
             
             ret = av_interleaved_write_frame(output_context, &packet);
             if (ret < 0) {
@@ -374,7 +362,6 @@ int main(int argc, char ** argv)
         }
         if(packet.stream_index == audioStreamIndex){
             frameIndex++;
-            //printf("#%d : [audio], index=%d, pts=%"PRId64", dts=%"PRId64", ifKey=%d, size=%d\n", frameIndex, packet.stream_index, packet.pts, packet.dts, packet.flags & AV_PKT_FLAG_KEY, packet.size);
         }
 
         av_free_packet(&packet);
