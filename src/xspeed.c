@@ -380,6 +380,14 @@ int main(int argc, char ** argv)
         av_free_packet(&packet);
     }
 
+    // write the end
+    av_write_trailer(output_context);
 
+
+    // close ctx
+    avformat_close_input(&output_context);
+    avformat_close_input(&ctx);
+
+    
     return 0;
 }
