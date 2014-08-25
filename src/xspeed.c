@@ -276,7 +276,7 @@ int main(int argc, char ** argv)
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
         video_stream->time_base = ctx->streams[videoStreamIndex]->time_base;
-        avcodec_get_context_defaults2(video_stream->codec, AVMEDIA_TYPE_VIDEO);
+        avcodec_get_context_defaults3(video_stream->codec, AVMEDIA_TYPE_VIDEO);
         video_enc_ctx = video_stream->codec;
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
