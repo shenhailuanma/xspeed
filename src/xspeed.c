@@ -1,12 +1,11 @@
 #include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <inttypes.h>
-#include <getopt.h>
-#include <sys/time.h>
-#include <stdlib.h>
+
+//#include <string.h>
+//#include <unistd.h>
+//#include <time.h>
+//#include <inttypes.h>
+//#include <sys/time.h>
+//#include <stdlib.h>
 
 #include "libavformat/avformat.h"
 
