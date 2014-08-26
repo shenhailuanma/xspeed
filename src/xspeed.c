@@ -58,8 +58,8 @@ static int xspeed_debug = 1;
 
 
 struct xspeed_params{
-    char input[512]; // input url
-    char output[512];
+    char *input; // input url
+    char *output;
     char format[32];
     double  speed;
 
@@ -81,94 +81,7 @@ static void print_help(void)
 }
 
 
-
-static struct option    long_option[] = 
-{
-    {"help",    no_argument,        0, 'h'},
-    {"input",   required_argument,  0, 'i'},
-    {"speed",   required_argument,  0, 's'},
-    {"output",   required_argument,  0, 'o'},
-    {"format",   required_argument,  0, 'f'},
-    {0, 0, 0, 0},
-};
-
-
-static int parse_and_update_params(struct xspeed_params * params, int argc, char ** argv)
-{
-    int ch;
-    int option_index = 0;
-    int argcnt = 0;
-
-    while(1){
-        ch = getopt_long(argc, argv, "hi:o:s:f:", long_option, &option_index);
-        if(ch == EOF){
-            break;
-        }
-
-        argcnt += 1;
-
-        switch(ch){
-            case 'h':
-                print_help();
-                return ARG_PARSE_QUIT;
-                break;
-
-            case 'i':
-                printf("-i(--input):%s\n",optarg);
-                
-                if(strlen(optarg) >= sizeof(params->input)){
-                    printf("input url too long!\n");
-                    return ARG_PARSE_ERROR;
-                }
-                strcpy(params->input, optarg);
-
-                break;
-            case 'o':
-                printf("-o(--output):%s\n",optarg);
-                if(strlen(optarg) >= sizeof(params->output)){
-                    printf("output url too long!\n");
-                    return ARG_PARSE_ERROR;
-                }
-                strcpy(params->output, optarg);
-            
-                break;
-            case 'f':
-                printf("-f(--format):%s\n",optarg);
-                if(strlen(optarg) >= sizeof(params->format)){
-                    printf("format too long!\n");
-                    return ARG_PARSE_ERROR;
-                }
-                strcpy(params->format, optarg);
-                break;
-
-            case 's':
-                printf("-s(--speed):%s\n",optarg);
-                params->speed = atof(optarg);
-               
-                break;
-            default:
-                print_help();
-                break;
-                
-        }
-    }
-
-    if(optind < argc)
-    {
-        printf("args parse error!\n");
-        return ARG_PARSE_ERROR;
-    }
-
-    if(argcnt <= 0){
-        print_help();
-        return ARG_PARSE_ERROR;
-    }
-
-    return ARG_PARSE_OK;
-
-}
-
-int main(int argc, char ** argv)
+int manfang(char * src, int speed, char * dest)
 {
 
 
@@ -183,11 +96,13 @@ int main(int argc, char ** argv)
 
 
     memset(&params, 0, sizeof(params));
+    if(speed <= 0)
+        speed = 1;
 
-    // parse and update the params
-    if(parse_and_update_params(&params, argc, argv) != 0){
-        return -1;
-    }
+    params.input = src;
+    params.output = dest;
+    params.speed = speed;
+    
 
     printf("input:%s\n", params.input);
     printf("output:%s\n", params.output);
@@ -378,3 +293,12 @@ int main(int argc, char ** argv)
     
     return 0;
 }
+
+
+int main(void)
+{
+    manfang("/home/tvie/FCL_1080p.mp4",2,"/tmp/xxx2.mp4");
+    return 0;
+}
+
+
