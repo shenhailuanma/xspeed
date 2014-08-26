@@ -3,13 +3,13 @@ xspeed
 
 xspeed is a tool that can change a media file play speed.
 
-Usage: ./xspeed -i InputFile -s 5 -o OutputFile
+Usage: manfang("src", speed, "dest");
 
 Options: 
 
-"-i" : option for input
+"src" : option for input
 
-"-s" : option for speed which change
+speed : option for speed which change
 
-"-o" : option for output
+"dest" : option for output
  
