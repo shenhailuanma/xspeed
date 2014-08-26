@@ -64,7 +64,7 @@ export LINKFLAGS
 export OS
 export CC
 
-targets = 3rdparty src 
+targets = 3rdparty 
 
 
 .PHONY: $(targets) all clean 

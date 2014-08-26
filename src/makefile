@@ -1,11 +1,6 @@
 
-ifeq ($(MAKELEVEL),0)
-.PHONY: all
-all:
-	$(MAKE) xspeed -C ..
-clean:
-	rm -rf *.o *.d xspeed
-else
+
+INSTALLDIR = /home/tvie/work/xspeed/_release
 
 CPPFLAGS = -I. -I$(INSTALLDIR)/include 
 ####CFLAGS += -Wall -Werror -std=c99
@@ -17,9 +12,6 @@ Source := xspeed.c
 OBJECTS := $(patsubst %.c, %.o, $(Source))
 
 BUILD_ARCH = $(shell uname -m)
-ifneq ($(BUILD_ARCH),x86_64)
- CPPFLAGS += -DENABLE_TVIE_WIN32LOADER
-endif
 
 .PHONY: all
 
@@ -30,10 +22,7 @@ all: xspeed
 
 xspeed: $(OBJECTS) $(INSTALLDIR)/lib/libavformat.a $(INSTALLDIR)/lib/libavcodec.a \
 $(INSTALLDIR)/lib/libavutil.a $(INSTALLDIR)/lib/libswscale.a $(INSTALLDIR)/lib/libswresample.a
-	$(CC) $^ -o $@ -lasound -lm -lz -lbz2 -lssl -lcrypto $(CPPFLAGS) $(LDFLAGS) $(LINKFLAGS)
+	$(CC) $^ -o $@  -lm -lz -lbz2  $(CPPFLAGS) $(LDFLAGS) $(LINKFLAGS)
 
 clean:
 	rm -rf *.o xspeed
-include ../autodepend.mak
-
-endif
