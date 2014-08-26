@@ -4,6 +4,7 @@
 # make D=static_release         build _static_release version
 # make D=static_debug           build _static_debug version
 
+
 ifndef D
  # default: _release version
  D = release

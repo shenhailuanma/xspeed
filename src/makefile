@@ -1,5 +1,4 @@
 
-
 INSTALLDIR = /home/tvie/work/xspeed/_release
 
 CPPFLAGS = -I. -I$(INSTALLDIR)/include 
