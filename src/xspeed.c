@@ -294,9 +294,10 @@ int manfang(char * src, int speed, char * dest)
 }
 
 
-int main(void)
+int main(int argc, char **argv)
 {
-    manfang("/home/tvie/FCL_1080p.mp4",2,"/tmp/xxx2.mp4");
+    
+    manfang(argv[1],2,argv[2]);
     return 0;
 }
 
