@@ -86,6 +86,7 @@ int manfang(char * src, int speed, char * dest)
 
     int ret;
     int val;
+    int i;
     
     struct xspeed_params params;
 
@@ -188,7 +189,14 @@ int manfang(char * src, int speed, char * dest)
         printf("metadata: %s=%s.\n", t->key, t->value);
         av_dict_set(&output_context->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
     }
-    
+
+    printf("nb_chapters:%d.\n", ctx->nb_chapters);
+    if(ctx->nb_chapters > 0){
+        for(i = 0; i < ctx->nb_chapters; i++){
+            printf("chapters:%d.\n", i);
+        }
+    }
+
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
         video_stream->time_base = ctx->streams[videoStreamIndex]->time_base;
@@ -230,8 +238,8 @@ int manfang(char * src, int speed, char * dest)
     }
 
     //if (av_set_parameters(output_context, NULL) < 0) {
-    //    ERR("Invalid output format parameters\n");
-    //    return -1;
+     //   ERR("Invalid output format parameters\n");
+     //   return -1;
     //}
 
     
