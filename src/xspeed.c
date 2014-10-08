@@ -136,7 +136,7 @@ int manfang(char * src, int speed, char * dest)
     double time_base = 0;
     int audio_time_base = 0;
     int video_time_base = 0;
-    int i;
+    
     AVCodecContext *video_decoder_ctx = NULL;
 
     for(i = 0; i < ctx->nb_streams; i++){
