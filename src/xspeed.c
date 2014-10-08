@@ -183,9 +183,9 @@ int manfang(char * src, int speed, char * dest)
     AVCodecContext *video_enc_ctx;
     int video_extra_size;
 
-    //AVMetadataTag *t = NULL;
-    //while ((t = av_metadata_get(ctx->metadata, "", t, AV_METADATA_IGNORE_SUFFIX)))
-    //    av_metadata_set2(&output_context->metadata, t->key, t->value, AV_METADATA_DONT_OVERWRITE);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(ctx->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
+        av_dict_set(&output_context->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
 
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
