@@ -184,10 +184,11 @@ int manfang(char * src, int speed, char * dest)
     int video_extra_size;
 
     AVDictionaryEntry *t = NULL;
-    while ((t = av_dict_get(ctx->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
+    while ((t = av_dict_get(ctx->metadata, "", t, AV_DICT_IGNORE_SUFFIX))){
         printf("metadata: %s=%s.\n", t->key, t->value);
         av_dict_set(&output_context->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
-
+    }
+    
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
         video_stream->time_base = ctx->streams[videoStreamIndex]->time_base;
@@ -196,14 +197,14 @@ int manfang(char * src, int speed, char * dest)
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
         video_enc_ctx->codec_type = video_decoder_ctx->codec_type;
-        /*
+        
         (!video_enc_ctx->codec_tag){
                 if( !output_context->oformat->codec_tag
                    || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
                    || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
                     video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
         }
-        */
+        
         video_enc_ctx->bit_rate = video_decoder_ctx->bit_rate;
         video_enc_ctx->bit_rate_tolerance = video_decoder_ctx->bit_rate_tolerance;
 
