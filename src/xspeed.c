@@ -197,13 +197,14 @@ int manfang(char * src, int speed, char * dest)
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
         video_enc_ctx->codec_type = video_decoder_ctx->codec_type;
-        
-        (!video_enc_ctx->codec_tag){
+
+        /*
+        if(!video_enc_ctx->codec_tag){
                 if( !output_context->oformat->codec_tag
                    || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
                    || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
                     video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
-        }
+        }*/
         
         video_enc_ctx->bit_rate = video_decoder_ctx->bit_rate;
         video_enc_ctx->bit_rate_tolerance = video_decoder_ctx->bit_rate_tolerance;
