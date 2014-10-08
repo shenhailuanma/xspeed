@@ -185,6 +185,7 @@ int manfang(char * src, int speed, char * dest)
 
     AVDictionaryEntry *t = NULL;
     while ((t = av_dict_get(ctx->metadata, "", t, AV_DICT_IGNORE_SUFFIX)))
+        printf("metadata: %s=%s.\n", t->key, t->value);
         av_dict_set(&output_context->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
 
     if(video_decoder_ctx != NULL){
