@@ -201,6 +201,7 @@ int manfang(char * src, int speed, char * dest)
         video_stream = av_new_stream(output_context, output_context->nb_streams);
         video_stream->time_base = ctx->streams[videoStreamIndex]->time_base;
         avcodec_get_context_defaults3(video_stream->codec, AVMEDIA_TYPE_VIDEO);
+        
         video_enc_ctx = video_stream->codec;
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
@@ -227,7 +228,7 @@ int manfang(char * src, int speed, char * dest)
         video_enc_ctx->height = video_decoder_ctx->height;
        // video_enc_ctx->height = 480;
         video_enc_ctx->has_b_frames = video_decoder_ctx->has_b_frames;
-	printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
+	    printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
         
         if(output_context->oformat->flags & AVFMT_GLOBALHEADER)
             video_enc_ctx->flags |= CODEC_FLAG_GLOBAL_HEADER;
@@ -236,6 +237,16 @@ int manfang(char * src, int speed, char * dest)
         video_enc_ctx->extradata = av_mallocz(video_extra_size);
         memcpy(video_enc_ctx->extradata, video_decoder_ctx->extradata, video_decoder_ctx->extradata_size);
         video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
+
+
+        ret = avcodec_copy_context(video_enc_ctx, video_decoder_ctx);
+        if (ret < 0) {
+            printf("Error initializing the output stream codec context.\n");
+            return -1;
+        }
+        video_enc_ctx->codec= video_decoder_ctx->codec;
+
+        
     }
 
     //if (av_set_parameters(output_context, NULL) < 0) {
