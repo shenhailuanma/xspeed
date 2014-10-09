@@ -203,17 +203,23 @@ int manfang(char * src, int speed, char * dest)
         avcodec_get_context_defaults3(video_stream->codec, AVMEDIA_TYPE_VIDEO);
         
         video_enc_ctx = video_stream->codec;
+        //ret = avcodec_copy_context(video_enc_ctx, video_decoder_ctx);
+        //if (ret < 0) {
+        //    printf("Error initializing the output stream codec context.\n");
+        //    return -1;
+        //}
+        video_enc_ctx->codec= video_decoder_ctx->codec;
 
         video_enc_ctx->codec_id = video_decoder_ctx->codec_id;
         video_enc_ctx->codec_type = video_decoder_ctx->codec_type;
 
         
-        if(!video_enc_ctx->codec_tag){
-                if( !output_context->oformat->codec_tag
-                   || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
-                   || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
-                    video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
-        }
+        //if(!video_enc_ctx->codec_tag){
+        //        if( !output_context->oformat->codec_tag
+        //           || av_codec_get_id (output_context->oformat->codec_tag, video_decoder_ctx->codec_tag) == video_enc_ctx->codec_id
+         //          || av_codec_get_tag(output_context->oformat->codec_tag, video_decoder_ctx->codec_id) <= 0)
+        //            video_enc_ctx->codec_tag = video_decoder_ctx->codec_tag;
+        //}
         
 
         video_enc_ctx->bit_rate = video_decoder_ctx->bit_rate;
@@ -239,12 +245,11 @@ int manfang(char * src, int speed, char * dest)
         video_enc_ctx->extradata_size = video_decoder_ctx->extradata_size;
 
 
-        ret = avcodec_copy_context(video_enc_ctx, video_decoder_ctx);
-        if (ret < 0) {
-            printf("Error initializing the output stream codec context.\n");
-            return -1;
+        while ((t = av_dict_get(ctx->streams[videoStreamIndex]->metadata, "", t, AV_DICT_IGNORE_SUFFIX))){
+            printf("stream metadata: %s=%s.\n", t->key, t->value);
+            av_dict_set(&video_stream->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
         }
-        video_enc_ctx->codec= video_decoder_ctx->codec;
+
 
         
     }
