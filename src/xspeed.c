@@ -186,16 +186,16 @@ int manfang(char * src, int speed, char * dest)
 
     AVDictionaryEntry *t = NULL;
     while ((t = av_dict_get(ctx->metadata, "", t, AV_DICT_IGNORE_SUFFIX))){
-        printf("metadata: %s=%s.\n", t->key, t->value);
+        //printf("metadata: %s=%s.\n", t->key, t->value);
         av_dict_set(&output_context->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
     }
 
-    printf("nb_chapters:%d.\n", ctx->nb_chapters);
-    if(ctx->nb_chapters > 0){
-        for(i = 0; i < ctx->nb_chapters; i++){
-            printf("chapters:%d.\n", i);
-        }
-    }
+    //printf("nb_chapters:%d.\n", ctx->nb_chapters);
+    //if(ctx->nb_chapters > 0){
+    //    for(i = 0; i < ctx->nb_chapters; i++){
+    //        printf("chapters:%d.\n", i);
+    //    }
+    //}
 
     if(video_decoder_ctx != NULL){
         video_stream = av_new_stream(output_context, output_context->nb_streams);
@@ -234,7 +234,7 @@ int manfang(char * src, int speed, char * dest)
         video_enc_ctx->height = video_decoder_ctx->height;
        // video_enc_ctx->height = 480;
         video_enc_ctx->has_b_frames = video_decoder_ctx->has_b_frames;
-	    printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
+	    //printf("width:%d, height:%d\n", video_enc_ctx->width, video_enc_ctx->height);
         
         if(output_context->oformat->flags & AVFMT_GLOBALHEADER)
             video_enc_ctx->flags |= CODEC_FLAG_GLOBAL_HEADER;
@@ -246,7 +246,7 @@ int manfang(char * src, int speed, char * dest)
 
 
         while ((t = av_dict_get(ctx->streams[videoStreamIndex]->metadata, "", t, AV_DICT_IGNORE_SUFFIX))){
-            printf("stream metadata: %s=%s.\n", t->key, t->value);
+            //printf("stream metadata: %s=%s.\n", t->key, t->value);
             av_dict_set(&video_stream->metadata, t->key, t->value, AV_DICT_DONT_OVERWRITE);
         }
 
